@@ -51,7 +51,7 @@
     "less-loader": "^8.0.0",
     "mini-css-extract-plugin": "^1.4.1",
     "raw-loader": "^4.0.1",
-    "run-script-os": "^1.1.1",
+    "run-script-os": "^1.1.6",
     "url-loader": "^4.1.0",
     "webpack": "^5.5.1",
     "webpack-cli": "^4.2.0"

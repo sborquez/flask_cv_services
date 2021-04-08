@@ -1,4 +1,4 @@
-# flask cv services
+# Flask Computer Vision Services
 
 Computer Vision services using Flask
 

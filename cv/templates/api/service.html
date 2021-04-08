@@ -1,0 +1,98 @@
+
+{% extends "layout.html" %}
+{% block content %}
+  <div class="jumbotron">
+    <div class="container">
+      <h1 class="display-3"><i class="fa fa-code"></i> {{ service.description }} </h1>
+      </div>
+  </div><!-- /.jumbotron -->
+
+  <div class="container border">
+  <div class="row">
+  <div class="col-lg-4 border">
+    <h1 class="mt-1"> {{ service.name }}</h1>
+    <br/>
+    <form id="cvForm" class="form form-register" enctype="multipart/form-data" role="form">
+      <div style="width: 100%;">
+        {{ form.hidden_tag() }}
+        {{ form.image(required="required", onchange="readUrl(this)") }}
+      </div>
+
+      {% for error in form.image.errors %}
+      <span style="color: red;">{{ error }}</span>
+      {% endfor %}
+    </form>
+    <div class="form-group">
+      <button class="btn btn-primary mx-auto" style="width: 100%;" id="sendbutton", onclick="sendImage('{{ service.url }}')">Send</button>
+    </div>
+  </div>
+  <div class="col-lg-8 border">
+    <h1 class="mt-1"> Image </h1>
+    <img id="imagebox" class="img-thumbnail rounded" src="">
+  </div>
+  </div>
+  <br/>
+  <div class="row">
+    <div class="col-lg-12 border">
+      <h1 class="mt-1"> Result </h1>
+      <img id="resultbox" class="img-thumbnail rounded" src="">
+      <button class="btn btn-primary mx-auto" style="width: 100%; display: none;" id="downloadbutton">Download</button>
+    </div>
+  </div>
+  </div>
+    
+  <div class="container">
+    {% if respond %}
+        {{ respond }}
+    {% endif %}
+  </div>
+{% endblock %}
+
+
+{% block js %}
+<script>  
+  function readUrl(input) {
+    imagebox = document.getElementById('imagebox');
+    if(input.files && input.files[0] && imageValidator(input.files[0])){
+      let reader = new FileReader();
+      reader.onload = function(e){
+        imagebox.src = e.target.result;
+        imagebox.width = 500;
+      }
+      reader.readAsDataURL(input.files[0]);
+    } else {
+      alert("Requiere Image");
+    }
+  }
+
+  function sendImage(url) {
+    input  = document.getElementById('image');
+    if(input.files && input.files[0] && imageValidator(input.files[0])){
+      let formData = new FormData();
+			formData.append('image' , input.files[0]);
+      fetch(url, {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(result => {
+        console.log('Success:', result);
+        resultbox  = document.getElementById('resultbox');
+        resultbox.src = 'data:image/jpeg;base64,' + result["image"].split('\'')[1]
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    } else {
+      alert("Requiere Image");
+    }
+  }
+
+  function imageValidator(image) {
+    return (["image/jpeg", "image/png"]).includes(image.type) && (image.size <= 1572864) ;
+  }
+
+</script>
+{% endblock %}
+
+
